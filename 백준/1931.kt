@@ -6,6 +6,7 @@
 
 출력
 첫째 줄에 최대 사용할 수 있는 회의의 최대 개수를 출력한다.*/
+
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -21,12 +22,13 @@ fun main()=with(BufferedReader(InputStreamReader(System.`in`))){
         time.add(pair)
     }
 
-    val sorted = time.sortedWith(compareBy { it.second })
+   time.sortWith(compareBy({it.second},{it.first}))
 
-    for(i in sorted.indices){
-        if(sorted[i].first>=endTime){
+
+    for(i in time.indices){
+        if(time[i].first>=endTime){
             count++
-            endTime = sorted[i].second
+            endTime = time[i].second
         }
 
     }
