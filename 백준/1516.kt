@@ -10,58 +10,51 @@
 
 출력
 N개의 각 건물이 완성되기까지 걸리는 최소 시간을 출력한다.*/
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.util.*
 import kotlin.math.max
 
-private data class Building(val number: Int, val time: Int, var degree: Int)
+private data class Node1516(val number:Int, val time:Int, var degree:Int)
 
-fun main() {
-    val bufferedReader = System.`in`.bufferedReader()
-    val bufferedWriter = System.out.bufferedWriter()
+fun main() = with(BufferedReader(InputStreamReader(System.`in`))){
 
-    val n = bufferedReader.readLine().toInt()
-    val nodes = mutableListOf(Building(0, 0, 0)) //◀ index starts with 1
-    val graph = Array(n + 1) { mutableListOf<Building>() } //◀ index starts with 1
+    val n = readLine().toInt()
+    val nodes = mutableListOf(Node1516(0,0,0))
+    val graph = Array(n+1){ mutableListOf<Node1516>()}
 
-    for (i in 1..n) {
-        val buildingNumbers = bufferedReader
-            .readLine()
-            .split(" ")
-            .map { it.toInt() }
-        nodes.add(Building(i, buildingNumbers[0], 0))
-        for (j in 1 until buildingNumbers.size) {
-            if (buildingNumbers[j] != -1) {
-                graph[buildingNumbers[j]].add(nodes[i])
-                nodes[i].degree++
+    for(i in 1 .. n){
+        val nums = readLine().split(" ").map { it.toInt() }
+        nodes.add(Node1516(i, nums[0], 0))
+        for(j in 1 until nums.size){
+            if(nums[j] != -1){
+                graph[nums[j]].add(nodes[i])
+                nodes[i].degree ++
             }
         }
     }
 
-    val results = Array(n + 1) { 0 } //◀ index starts with 1
-    val queue: Queue<Building> = LinkedList()
-    for (i in 1..n) {
-        if (nodes[i].degree == 0) {
-            queue.add(nodes[i])
+    val results = IntArray(n+1)
+    val q = LinkedList<Node1516>()
+    for(i in 1 .. n){
+        if(nodes[i].degree == 0){
+            q.add(nodes[i])
             results[i] = nodes[i].time
         }
     }
 
-    while (queue.isNotEmpty()) {
-        val currentNode = queue.poll()
-        for (connectedNode in graph[currentNode.number]) {
-            connectedNode.degree--
-            results[connectedNode.number] =
-                max(results[connectedNode.number], results[currentNode.number] + connectedNode.time)
-            if (connectedNode.degree == 0) {
-                queue.add(connectedNode)
+    while(q.isNotEmpty()){
+        val tempNode = q.poll()
+        for( cNode in graph[tempNode.number]){
+            cNode.degree --
+            results[cNode.number] =
+                max(results[cNode.number], results[tempNode.number] + cNode.time)
+            if(cNode.degree == 0){
+                q.add(cNode)
             }
         }
     }
-
-    for (i in 1..n) {
-        bufferedWriter.write("${results[i]}\n")
+    for( i in 1 ..n){
+        println(results[i])
     }
-
-    bufferedReader.close()
-    bufferedWriter.close()
 }
